@@ -1,0 +1,26 @@
+@CHARSET "ISO-8859-1";
+
+.easytabs .tabs-panel {
+	min-height: 42px;
+	max-height: 200px;
+	overflow: auto;
+	padding: 0 .9em;
+	border: 1px solid #dfdfdf;
+	background-color: #fdfdfd;
+}
+
+.easytabs ul li {
+	color: #808080;
+	text-transform: uppercase;
+	padding: 3px 5px 7px;
+}
+
+.easytabs ul li.active {
+	border: 1px solid #dfdfdf;
+	border-bottom-color: #fdfdfd;
+	background-color: #fdfdfd;
+}
+
+.easytabs ul li.a:ACTIVE {
+	border: none;
+}
