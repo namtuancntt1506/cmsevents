@@ -1,23 +1,23 @@
 <?php
-add_action('admin_menu', 'touristtravel_menu_page');
-add_action('admin_init', 'touristtravel_register_options');
+add_action('admin_menu', 'cmsevent_menu_page');
+add_action('admin_init', 'cmsevent_register_options');
 
-function touristtravel_menu_page()
+function cmsevent_menu_page()
 {
-    add_options_page('Tourist Travel', 'Tourist Travel', 'manage_options', 'touristtravel', 'touristtravel_options_page');
+    add_submenu_page('edit.php?post_type=events', __('Setting', CMSEVENTS_NAME), __('Setting', CMSEVENTS_NAME), 'manage_options', 'cmsevents', 'cmsevent_options_page');
 }
 
-function touristtravel_register_options()
+function cmsevent_register_options()
 {
     //register_setting( 'touristtravel', '_tt_column' );
     //register_setting( 'touristtravel', '_tt_items' );
 }
 
-function touristtravel_options_page()
+function cmsevent_options_page()
 {
     ?>
     <div class="wrap">
-        <h2><?php _e('Tourist Travel Setting', CMSEVENTS_NAME); ?></h2>
+        <h2><?php _e('Event Setting', CMSEVENTS_NAME); ?></h2>
         <form action="options.php" method="post">
         <?php settings_fields( 'touristtravel' ); do_settings_sections( 'touristtravel' ); ?>
         <table class="form-table">

@@ -58,7 +58,7 @@ function add_post_type_event()
         'has_archive' => true,
         'hierarchical' => false,
         'menu_position' => 10,
-        'menu_icon' => 'dashicons-calendar-alt',
+        'menu_icon' => 'dashicons-clock',
         'supports' => array(
             'title',
             'editor',
@@ -158,19 +158,17 @@ add_action('manage_events_posts_custom_column', 'custom_events_column', 10, 2);
 
 function set_custom_events_columns($columns)
 {
-    $columns['start_date'] = __('Starts Date', CMSEVENTS_NAME);
-    $columns['end_date'] = __('End Date', CMSEVENTS_NAME);
+    $columns['event_date'] = __('Events Date', CMSEVENTS_NAME);
+    $columns['event_booking'] = __('Events Booking', CMSEVENTS_NAME);
     return $columns;
 }
 
 function custom_events_column($column, $post_id)
 {
+    $event_data = get_event_data($post_id);
     switch ($column) {
-        case 'start_date':
-            echo get_post_meta($post_id, 'cs_start_date', true);
-            break;
-        case 'end_date':
-            echo get_post_meta($post_id, 'cs_end_date', true);
+        case 'event_date':
+            echo "Start: {$event_data->start_date}</br> End: {$event_data->end_date}";
             break;
     }
 }
@@ -185,8 +183,9 @@ function event_meta_boxes() {
 
 function event_meta_boxes_content(){
     global $post;
-    $start_date = get_post_meta($post->ID, 'cmsevent_start_date', true);
-    $end_date = get_post_meta($post->ID, 'cmsevent_end_date', true);
+    $event_data = get_event_data($post->ID);
+    $start_date = !empty($event_data->start_date) ? $event_data->start_date : date_i18n('Y-m-d H:i') ;
+    $end_date = !empty($event_data->end_date) ?  $event_data->end_date : '';
     
     $cmsevent_location = get_post_meta($post->ID, 'cmsevent_location', true);
     $cmsevent_address = get_post_meta($post->ID, 'cmsevent_address', true);
@@ -195,6 +194,7 @@ function event_meta_boxes_content(){
     $cmsevent_postcode = get_post_meta($post->ID, 'cmsevent_postcode', true);
     $cmsevent_region = get_post_meta($post->ID, 'cmsevent_region', true);
     $cmsevent_country = get_post_meta($post->ID, 'cmsevent_country', true);
+    
     
     if(empty($start_date)){ $start_date = date('Y-m-d'); }
     ?>
@@ -207,11 +207,11 @@ function event_meta_boxes_content(){
             <ul>
                 <li>
                     <label for="cmsevent_start_date"><?php _e('Start Date', CMSEVENTS_NAME); ?></label>
-                    <input id="cmsevent_start_date" name="cmsevent_start_date" type="text" class="newtag form-input-tip input-datetime" value="<?php echo esc_attr($start_date); ?>" placeholder="" />
+                    <input id="cmsevent_start_date" name="cmsevent_start_date" type="text" class="newtag form-input-tip input-datetime" value="<?php echo esc_attr($start_date); ?>"/>
                 </li>
                 <li>
                     <label for="cmsevent_end_date"><?php _e('End Date', CMSEVENTS_NAME); ?></label>
-                    <input id="cmsevent_end_date" name="cmsevent_end_date" type="text" class="newtag form-input-tip input-datetime" value="<?php echo esc_attr($end_date); ?>" placeholder="" />
+                    <input id="cmsevent_end_date" name="cmsevent_end_date" type="text" class="newtag form-input-tip input-datetime" value="<?php echo esc_attr($end_date); ?>"/>
                 </li>
             </ul>
         </div>
@@ -219,7 +219,7 @@ function event_meta_boxes_content(){
             <ul>
                 <li>
                     <label for="cmsevent_location"><?php _e('Location Name *', CMSEVENTS_NAME); ?></label></br>
-                    <input id="cmsevent_location" name="cmsevent_location" type="text" class="newtag form-input-tip" value="<?php echo esc_attr($cmsevent_location); ?>" placeholder="" />
+                    <input id="cmsevent_location" name="cmsevent_location" type="text" class="newtag form-input-tip" value="<?php echo esc_attr($cmsevent_location); ?>"/>
                 </li>
                 <li>
                     <label for="cmsevent_address"><?php _e('Address *', CMSEVENTS_NAME); ?></label></br>
