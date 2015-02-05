@@ -187,6 +187,8 @@ function event_meta_boxes_content(){
     $start_date = !empty($event_data->start_date) ? $event_data->start_date : date_i18n('Y-m-d H:i') ;
     $end_date = !empty($event_data->end_date) ?  $event_data->end_date : '';
     
+    $cmsevent_no_location = get_post_meta($post->ID, 'cmsevent_no_location', true);
+    
     $cmsevent_location = get_post_meta($post->ID, 'cmsevent_location', true);
     $cmsevent_address = get_post_meta($post->ID, 'cmsevent_address', true);
     $cmsevent_city = get_post_meta($post->ID, 'cmsevent_city', true);
@@ -217,6 +219,12 @@ function event_meta_boxes_content(){
         </div>
         <div id="events_local" class="tabs-panel">
             <ul>
+                <li>
+                    <label for="cmsevent_no_location"><?php _e('This event does not have a physical location.', CMSEVENTS_NAME); ?></label></br>
+                    <input id="cmsevent_no_location" name="cmsevent_no_location" type="checkbox" class="newtag form-input-tip" <?php echo $cmsevent_no_location ? 'checked="checked"' : '' ; ?>/>
+                </li>
+            </ul>
+            <ul id="events_location">
                 <li>
                     <label for="cmsevent_location"><?php _e('Location Name *', CMSEVENTS_NAME); ?></label></br>
                     <input id="cmsevent_location" name="cmsevent_location" type="text" class="newtag form-input-tip" value="<?php echo esc_attr($cmsevent_location); ?>"/>
@@ -269,13 +277,16 @@ function events_save_data($post_id) {
     
     if(isset($start_date) || isset($end_date)){
         /* update meta */
-        update_post_meta($post_id, 'cmsevent_location', $_POST['cmsevent_location']);
-        update_post_meta($post_id, 'cmsevent_address', $_POST['cmsevent_address']);
-        update_post_meta($post_id, 'cmsevent_city', $_POST['cmsevent_city']);
-        update_post_meta($post_id, 'cmsevent_state', $_POST['cmsevent_state']);
-        update_post_meta($post_id, 'cmsevent_postcode', $_POST['cmsevent_postcode']);
-        update_post_meta($post_id, 'cmsevent_region', $_POST['cmsevent_region']);
-        update_post_meta($post_id, 'cmsevent_country', $_POST['cmsevent_country']);
+        if($_POST['cmsevent_no_location'] != 'on' && !empty($_POST['cmsevent_location']) && !empty($_POST['cmsevent_address']) && !empty($_POST['cmsevent_city'])){
+            update_post_meta($post_id, 'cmsevent_no_location', $_POST['cmsevent_no_location']);
+            update_post_meta($post_id, 'cmsevent_location', $_POST['cmsevent_location']);
+            update_post_meta($post_id, 'cmsevent_address', $_POST['cmsevent_address']);
+            update_post_meta($post_id, 'cmsevent_city', $_POST['cmsevent_city']);
+            update_post_meta($post_id, 'cmsevent_state', $_POST['cmsevent_state']);
+            update_post_meta($post_id, 'cmsevent_postcode', $_POST['cmsevent_postcode']);
+            update_post_meta($post_id, 'cmsevent_region', $_POST['cmsevent_region']);
+            update_post_meta($post_id, 'cmsevent_country', $_POST['cmsevent_country']);
+        }
         /* insert datetime */
         if (!empty($_post_id)) {
             $wpdb->update("{$wpdb->prefix}events", array(

@@ -4,6 +4,7 @@
  * The CMS Events Plugin
  * @package CMS Events
  * @subpackage Main
+ * @link https://github.com/vianhtu/cmsevents
  */
 
 /**
@@ -25,8 +26,6 @@ define('CMSEVENTS_DIR', plugin_dir_path(__FILE__));
 
 if (! class_exists('CMSEvents')) :
     
-    require_once CMSEVENTS_DIR . 'includes/common/events-templates.php';
-
     final class CMSEvents
     {
 
@@ -47,15 +46,17 @@ if (! class_exists('CMSEvents')) :
          */
         private function includes()
         {
-            // admin options /
-            require_once $this->includes_dir . 'admin/admin.options.php';
-            // common functions /
-            require_once $this->includes_dir . 'common/events-postype.php';
-            // base functions /
-            require_once $this->includes_dir . 'core/base.functions.php';
-            if (class_exists('Vc_Manager')) {
-                //require_once $this->includes_dir . 'common/vc_options.php';
+            if(is_admin()){
+            
+            } else {
+                require $this->includes_dir . 'common/events-templates.php';
             }
+            // admin options /
+            require $this->includes_dir . 'admin/admin.options.php';
+            // common functions /
+            require $this->includes_dir . 'common/events-postype.php';
+            // base functions /
+            require $this->includes_dir . 'core/base.functions.php';
         }
         /**
          * Create Table.
