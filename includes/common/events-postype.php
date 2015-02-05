@@ -187,6 +187,8 @@ function event_meta_boxes_content(){
     $start_date = !empty($event_data->start_date) ? $event_data->start_date : date_i18n('Y-m-d H:i') ;
     $end_date = !empty($event_data->end_date) ?  $event_data->end_date : '';
     
+    $cmsevent_start_date = get_post_meta($post->ID, 'cmsevent_start_date', true);
+    $cmsevent_end_date = get_post_meta($post->ID, 'cmsevent_end_date', true);
     $cmsevent_no_location = get_post_meta($post->ID, 'cmsevent_no_location', true);
     
     $cmsevent_location = get_post_meta($post->ID, 'cmsevent_location', true);
@@ -276,6 +278,8 @@ function events_save_data($post_id) {
     $_post_id = $wpdb->get_var("SELECT e.post_id FROM {$wpdb->prefix}events as e WHERE e.post_id= {$post_id}");
     
     if(isset($start_date) || isset($end_date)){
+        update_post_meta($post_id, 'cmsevent_start_date', date('U',strtotime($_POST['cmsevent_start_date'])));
+        update_post_meta($post_id, 'cmsevent_end_date', date('U',strtotime($_POST['cmsevent_end_date'])));
         /* update meta */
         if($_POST['cmsevent_no_location'] != 'on' && !empty($_POST['cmsevent_location']) && !empty($_POST['cmsevent_address']) && !empty($_POST['cmsevent_city'])){
             update_post_meta($post_id, 'cmsevent_no_location', $_POST['cmsevent_no_location']);
