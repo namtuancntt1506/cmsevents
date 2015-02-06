@@ -23,18 +23,12 @@ function cmsevent_options_page()
         <table class="form-table">
             <tbody>
                 <tr>
-                    <th scope="row"><?php _e('Column', CMSEVENTS_NAME); ?></th>
-                    <td>
-                        <input name="_tt_column" id="_tt_column" type="number" min="1" max="4" step="1" value="<?php echo get_option('_tt_column', 3); ?>" class="small-text">
-                        <label for="_tt_column"><?php _e('set column layout', CMSEVENTS_NAME); ?></label>
-                    </td>
+                    <th scope="row"></th>
+                    <td></td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php _e('Max Items', CMSEVENTS_NAME); ?></th>
-                    <td>
-                        <input name="_tt_items" id="_tt_items" type="number" min="1" step="1" value="<?php echo get_option('_tt_items', 6); ?>" class="small-text">
-                        <label for="_tt_items"><?php _e('set max items', CMSEVENTS_NAME); ?></label>
-                    </td>
+                    <th scope="row"></th>
+                    <td></td>
                 </tr>
             </tbody>
         </table>
