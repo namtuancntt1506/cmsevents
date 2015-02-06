@@ -12,7 +12,7 @@
 function is_cmsevents(){
     // Defalt to false
     $retval = false;
-    if(get_post_type() == 'events'){
+    if(get_post_type() == 'event'){
         $retval = true;
     }
     return $retval;
@@ -55,7 +55,7 @@ add_filter('archive_template', 'get_event_archive_template');
 
 function get_event_archive_template($template)
 {
-    if (get_post_type() == 'events') {
+    if (get_post_type() == 'event') {
         $new_template = locate_template('cmsevents/content-archive.php');
         if ('' != $new_template) {
             return $new_template;
@@ -74,7 +74,7 @@ add_filter('single_template', 'get_event_single_template');
 
 function get_event_single_template($template)
 {
-    if (get_post_type() == 'events') {
+    if (get_post_type() == 'event') {
         $new_template = locate_template('cmsevents/content-single.php');
         if ('' != $new_template) {
             return $new_template;

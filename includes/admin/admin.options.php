@@ -4,7 +4,7 @@ add_action('admin_init', 'cmsevent_register_options');
 
 function cmsevent_menu_page()
 {
-    add_submenu_page('edit.php?post_type=events', __('Setting', CMSEVENTS_NAME), __('Setting', CMSEVENTS_NAME), 'manage_options', 'cmsevents', 'cmsevent_options_page');
+    add_submenu_page('edit.php?post_type=event', __('Setting', CMSEVENTS_NAME), __('Setting', CMSEVENTS_NAME), 'manage_options', 'cmsevents', 'cmsevent_options_page');
 }
 
 function cmsevent_register_options()

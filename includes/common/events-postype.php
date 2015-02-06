@@ -12,7 +12,7 @@ add_action( 'admin_enqueue_scripts', 'add_post_type_script' );
 
 function add_post_type_script(){
     $screen = get_current_screen();
-    if($screen->post_type == 'events'){
+    if($screen->post_type == 'event'){
         wp_enqueue_style('datetimepicker', CMSEVENTS_URL . 'assets/css/jquery.datetimepicker.css');
         wp_enqueue_style('easytabs', CMSEVENTS_URL . 'assets/css/jquery.easytabs.css');
         
@@ -53,7 +53,7 @@ function add_post_type_event()
         'show_ui' => true,
         'query_var' => true,
         'rewrite' => array(
-            'slug' => 'events'
+            'slug' => 'event'
         ),
         'has_archive' => true,
         'hierarchical' => false,
@@ -68,11 +68,11 @@ function add_post_type_event()
             'comments'
         )
     );
-    register_post_type('events', $args);
+    register_post_type('event', $args);
     /**
      * Event Taxonomy
      */
-    register_taxonomy('events_category', 'events', array(
+    register_taxonomy('event_category', 'event', array(
         'hierarchical' => true,
         'label' => __('Event Categories', CMSEVENTS_NAME),
         'show_ui' => true,
@@ -102,7 +102,7 @@ function add_post_type_event()
         'menu_name' => __('Event Tags', CMSEVENTS_NAME)
     );
     
-    register_taxonomy('event_tag', 'events', array(
+    register_taxonomy('event_tag', 'event', array(
         'hierarchical' => false,
         'labels' => $labels,
         'show_ui' => true,
@@ -123,14 +123,14 @@ function restrict_listings_by_events()
 {
     global $typenow;
     global $wp_query;
-    if ($typenow == 'events') {
-        $taxonomy = 'events_category';
-        $term = isset($wp_query->query['events_category']) ? $wp_query->query['events_category'] : '';
+    if ($typenow == 'event') {
+        $taxonomy = 'event_category';
+        $term = isset($wp_query->query['event_category']) ? $wp_query->query['event_category'] : '';
         $business_taxonomy = get_taxonomy($taxonomy);
         wp_dropdown_categories(array(
             'show_option_all' => __("Show All", CMSEVENTS_NAME),
             'taxonomy' => $taxonomy,
-            'name' => 'events_category',
+            'name' => 'event_category',
             'orderby' => 'name',
             'selected' => $term,
             'hierarchical' => true,
@@ -145,16 +145,16 @@ function convert_events_id_to_taxonomy_term_in_query($query)
 {
     global $pagenow;
     $qv = &$query->query_vars;
-    if ($pagenow == 'edit.php' && isset($qv['events_category']) && is_numeric($qv['events_category'])) {
-        $term = get_term_by('id', $qv['events_category'], 'events_category');
-        $qv['events_category'] = ($term ? $term->slug : '');
+    if ($pagenow == 'edit.php' && isset($qv['event_category']) && is_numeric($qv['event_category'])) {
+        $term = get_term_by('id', $qv['event_category'], 'event_category');
+        $qv['event_category'] = ($term ? $term->slug : '');
     }
 }
 /**
  * Add Collumn To Table
  */
-add_filter('manage_edit-events_columns', 'set_custom_events_columns');
-add_action('manage_events_posts_custom_column', 'custom_events_column', 10, 2);
+add_filter('manage_edit-event_columns', 'set_custom_events_columns');
+add_action('manage_event_posts_custom_column', 'custom_events_column', 10, 2);
 
 function set_custom_events_columns($columns)
 {
@@ -165,10 +165,18 @@ function set_custom_events_columns($columns)
 
 function custom_events_column($column, $post_id)
 {
-    $event_data = get_event_data($post_id);
+    global $post;
+    $cmsevent_start_date = get_post_meta($post->ID, 'cmsevent_start_date', true);
+    $cmsevent_end_date = get_post_meta($post->ID, 'cmsevent_end_date', true);
+    
     switch ($column) {
         case 'event_date':
-            echo "Start: {$event_data->start_date}</br> End: {$event_data->end_date}";
+            echo "Start: ".date('Y-m-d H:i:s',$cmsevent_start_date);
+            if($cmsevent_end_date){
+                echo "</br> End: ".date('Y-m-d H:i:s', $cmsevent_end_date);
+            } else {
+                _e('</br> End: Never', CMSEVENTS_NAME);
+            }
             break;
     }
 }
@@ -178,7 +186,7 @@ function custom_events_column($column, $post_id)
 add_action('add_meta_boxes','event_meta_boxes');
 
 function event_meta_boxes() {
-    add_meta_box('event_date', __('Event Options', CMSEVENTS_NAME), 'event_meta_boxes_content', 'events', 'side', 'high');
+    add_meta_box('event_date', __('Event Options', CMSEVENTS_NAME), 'event_meta_boxes_content', 'event', 'side', 'high');
 }
 
 function event_meta_boxes_content(){
