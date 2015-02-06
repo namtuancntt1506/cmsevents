@@ -34,11 +34,6 @@ if (! class_exists('CMSEvents')) :
             $this->includes_dir = CMSEVENTS_DIR . 'includes/';
             /* includes file */
             $this->includes();
-            /* activation install table */
-            register_activation_hook(__FILE__, array(
-                $this,
-                'table_install'
-            ));
         }
 
         /**
@@ -57,40 +52,6 @@ if (! class_exists('CMSEvents')) :
             require $this->includes_dir . 'common/events-postype.php';
             // base functions /
             require $this->includes_dir . 'core/base.functions.php';
-        }
-        /**
-         * Create Table.
-         */
-        function table_install()
-        {
-            global $wpdb;
-            
-            $charset_collate = '';
-            
-            if (! empty($wpdb->charset)) {
-                $charset_collate = "DEFAULT CHARACTER SET {$wpdb->charset}";
-            }
-            
-            if (! empty($wpdb->collate)) {
-                $charset_collate .= " COLLATE {$wpdb->collate}";
-            }
-            require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
-            /**
-             * table auto_evanto
-             */
-            $table_name = $wpdb->prefix . 'events';
-            if ($wpdb->get_var("SHOW TABLES LIKE '" . $table_name . "'") !== $table_name) {
-                
-                $sql = "CREATE TABLE $table_name (
-                id mediumint(9) NOT NULL AUTO_INCREMENT,
-                post_id mediumint(9) NOT NULL,
-                start_date datetime,
-                end_date datetime,
-                UNIQUE KEY id (id)
-                ) $charset_collate;";
-                
-                dbDelta($sql);
-            }
         }
     }
     new CMSEvents();

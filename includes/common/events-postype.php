@@ -291,21 +291,6 @@ function events_save_data($post_id) {
             update_post_meta($post_id, 'cmsevent_region', $_POST['cmsevent_region']);
             update_post_meta($post_id, 'cmsevent_country', $_POST['cmsevent_country']);
         }
-        /* insert datetime */
-        if (!empty($_post_id)) {
-            $wpdb->update("{$wpdb->prefix}events", array(
-                'start_date' => $start_date,
-                'end_date' => $end_date,
-            ), array(
-                'post_id' => $post_id
-            ));
-        } else {
-            $kkk = $wpdb->insert("{$wpdb->prefix}events", array(
-                'post_id' => $post_id,
-                'start_date' => $start_date,
-                'end_date' => $end_date,
-            ));
-        }
     }
 }
 
