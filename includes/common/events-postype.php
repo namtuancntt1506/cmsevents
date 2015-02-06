@@ -191,12 +191,13 @@ function event_meta_boxes() {
 
 function event_meta_boxes_content(){
     global $post;
-    $event_data = get_event_data($post->ID);
-    $start_date = !empty($event_data->start_date) ? $event_data->start_date : date_i18n('Y-m-d H:i') ;
-    $end_date = !empty($event_data->end_date) ?  $event_data->end_date : '';
     
     $cmsevent_start_date = get_post_meta($post->ID, 'cmsevent_start_date', true);
+    $cmsevent_start_date = $cmsevent_start_date ? date('Y-m-d H:i',$cmsevent_start_date) : '';
+    
     $cmsevent_end_date = get_post_meta($post->ID, 'cmsevent_end_date', true);
+    $cmsevent_end_date = $cmsevent_end_date ? date('Y-m-d H:i',$cmsevent_end_date) : '';
+    
     $cmsevent_no_location = get_post_meta($post->ID, 'cmsevent_no_location', true);
     
     $cmsevent_location = get_post_meta($post->ID, 'cmsevent_location', true);
@@ -219,11 +220,11 @@ function event_meta_boxes_content(){
             <ul>
                 <li>
                     <label for="cmsevent_start_date"><?php _e('Start Date', CMSEVENTS_NAME); ?></label>
-                    <input id="cmsevent_start_date" name="cmsevent_start_date" type="text" class="newtag form-input-tip input-datetime" value="<?php echo esc_attr($start_date); ?>"/>
+                    <input id="cmsevent_start_date" name="cmsevent_start_date" type="text" class="newtag form-input-tip input-datetime" value="<?php echo esc_attr($cmsevent_start_date); ?>"/>
                 </li>
                 <li>
                     <label for="cmsevent_end_date"><?php _e('End Date', CMSEVENTS_NAME); ?></label>
-                    <input id="cmsevent_end_date" name="cmsevent_end_date" type="text" class="newtag form-input-tip input-datetime" value="<?php echo esc_attr($end_date); ?>"/>
+                    <input id="cmsevent_end_date" name="cmsevent_end_date" type="text" class="newtag form-input-tip input-datetime" value="<?php echo esc_attr($cmsevent_end_date); ?>"/>
                 </li>
             </ul>
         </div>
@@ -272,18 +273,14 @@ function event_meta_boxes_content(){
  * Action Save Event
  */
 add_action('save_post','events_save_data');
-add_action('before_delete_post', 'events_delete_data');
 
-function events_save_data($post_id) {
-    global $wpdb;
-    
+function events_save_data($post_id) {    
     if(isset($_POST['cmsevent_start_date'])){
         $start_date = $_POST['cmsevent_start_date'];
     }
     if(isset($_POST['cmsevent_end_date'])){
         $end_date = $_POST['cmsevent_end_date'];
     }
-    $_post_id = $wpdb->get_var("SELECT e.post_id FROM {$wpdb->prefix}events as e WHERE e.post_id= {$post_id}");
     
     if(isset($start_date) || isset($end_date)){
         update_post_meta($post_id, 'cmsevent_start_date', date('U',strtotime($_POST['cmsevent_start_date'])));
@@ -300,9 +297,4 @@ function events_save_data($post_id) {
             update_post_meta($post_id, 'cmsevent_country', $_POST['cmsevent_country']);
         }
     }
-}
-
-function events_delete_data($post_id){
-    global $wpdb;
-    $wpdb->delete( $wpdb->prefix.'events', array('post_id'=>$post_id));
 }
